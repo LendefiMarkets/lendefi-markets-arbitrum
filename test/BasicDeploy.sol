@@ -111,10 +111,10 @@ contract BasicDeploy is Test {
      * @return UsdcWethPool The USDC/WETH pool address for this network
      */
     function getNetworkAddresses() internal returns (address networkUSDC, address networkWETH, address UsdcWethPool) {
-        if (block.chainid == LendefiConstants.BASE_CHAIN_ID) {
-            // Base mainnet addresses
-            networkUSDC = LendefiConstants.BASE_USDC;
-            networkWETH = LendefiConstants.BASE_WETH;
+        if (block.chainid == LendefiConstants.ARB_CHAIN_ID) {
+            // Arbitrum mainnet addresses
+            networkUSDC = LendefiConstants.ARB_USDC;
+            networkWETH = LendefiConstants.ARB_WETH;
             UsdcWethPool = LendefiConstants.USDC_ETH_POOL;
         } else {
             // Testnet or other networks - use mock/deployed addresses

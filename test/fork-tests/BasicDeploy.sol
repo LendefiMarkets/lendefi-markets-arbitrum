@@ -48,13 +48,13 @@ contract BasicDeploy is Test {
     LendefiCore internal marketCoreInstance;
     LendefiMarketVault internal marketVaultInstance;
 
-    // Fork test specific IERC20 instances for Base
-    IERC20 usdcInstance = IERC20(0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913); //real usdc base mainnet for fork testing
-    IERC20 usdtInstance = IERC20(0xfde4C96C8593536C3fcF34c7E4a6777c1b31a7C3); //real usdt base mainnet for fork testing
+    // Fork test specific IERC20 instances for Arbitrum
+    IERC20 usdcInstance = IERC20(0xaf88d065e77c8cC2239327C5EDb3A432268e5831); //real usdc arbitrum mainnet for fork testing
+    IERC20 usdtInstance = IERC20(0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9); //real usdt arbitrum mainnet for fork testing
 
     /**
      * @notice Get network-specific addresses for oracle validation
-     * @dev For fork tests, always returns Base mainnet addresses from LendefiConstants
+     * @dev For fork tests, always returns Arbitrum mainnet addresses from LendefiConstants
      * @return networkUSDC The USDC address for this network
      * @return networkWETH The WETH address for this network
      * @return UsdcWethPool The USDC/WETH pool address for this network
@@ -64,9 +64,9 @@ contract BasicDeploy is Test {
         pure
         returns (address networkUSDC, address networkWETH, address UsdcWethPool)
     {
-        // Fork tests run on Base mainnet, so use LendefiConstants addresses
-        networkUSDC = LendefiConstants.BASE_USDC;
-        networkWETH = LendefiConstants.BASE_WETH;
+        // Fork tests run on Arbitrum mainnet, so use LendefiConstants addresses
+        networkUSDC = LendefiConstants.ARB_USDC;
+        networkWETH = LendefiConstants.ARB_WETH;
         UsdcWethPool = LendefiConstants.USDC_ETH_POOL;
     }
 

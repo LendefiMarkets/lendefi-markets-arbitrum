@@ -41,18 +41,18 @@ library LendefiConstants {
     /// @notice Max assets supported by platform
     uint32 internal constant MAX_ASSETS = 3000;
 
-    /// @notice Base chain ID
-    uint256 internal constant ARB_CHAIN_ID = 8453;
+    /// @notice Arbitrum chain ID
+    uint256 internal constant ARB_CHAIN_ID = 42161;
 
-    /// @notice Base sequencer uptime feed address
+    /// @notice Arbitrum sequencer uptime feed address
     address internal constant SEQUENCER_FEED = 0xFdB631F5EE196F0ed6FAa767959853A9F217697D;
 
     /// @notice Grace period after sequencer restart (1 hour)
     uint256 internal constant GRACE_PERIOD = 3600;
 
-    /// @notice Base mainnet USDC address
+    /// @notice Arbitrum mainnet USDC address
     address internal constant ARB_USDC = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
 
-    /// @notice Base mainnet WETH address
+    /// @notice Arbitrum mainnet WETH address
     address internal constant ARB_WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
 }
