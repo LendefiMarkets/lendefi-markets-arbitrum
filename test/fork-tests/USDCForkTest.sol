@@ -12,26 +12,26 @@ import {IUniswapV3Pool} from "../../contracts/interfaces/IUniswapV3Pool.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
 contract USDCForkTest is BasicDeploy {
-    // Base mainnet addresses (from networks.json)
-    address constant WETH = 0x4200000000000000000000000000000000000006;
-    address constant CBBTC = 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf;
-    address constant USDC_BASE = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
+    // Arbitrum mainnet addresses (from networks.json)
+    address constant WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
+    address constant WBTC = 0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f;
+    address constant USDC_ARB = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
 
-    // Pools - Base mainnet (from networks.json)
-    address constant WETH_USDC_POOL = 0xb2cc224c1c9feE385f8ad6a55b4d94E92359DC59;
-    address constant CBBTC_USDC_POOL = 0xfBB6Eed8e7aa03B138556eeDaF5D271A5E1e43ef;
-    address constant WETH_CBBTC_POOL = 0x70aCDF2Ad0bf2402C957154f944c19Ef4e1cbAE1;
+    // Pools - Arbitrum mainnet (from networks.json)
+    address constant WETH_USDC_POOL = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
+    address constant WBTC_USDC_POOL = 0x2f5e87C9312fa29aed5c179E456625D79015299c; // Using WBTC/WETH pool
+    address constant WBTC_WETH_POOL = 0x2f5e87C9312fa29aed5c179E456625D79015299c;
 
-    // Base mainnet Chainlink oracle addresses (from networks.json)
-    address constant WETH_CHAINLINK_ORACLE = 0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70; // eth-usd
-    address constant CBBTC_CHAINLINK_ORACLE = 0xCCADC697c55bbB68dc5bCdf8d3CBe83CdD4E071E; // wbtc-usd
+    // Arbitrum mainnet Chainlink oracle addresses (from networks.json)
+    address constant WETH_CHAINLINK_ORACLE = 0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612; // eth-usd
+    address constant WBTC_CHAINLINK_ORACLE = 0x6ce185860a4963106506C203335A2910413708e9; // btc-usd
 
     uint256 mainnetFork;
     address testUser;
 
     function setUp() public {
-        // Fork Base mainnet at a specific block
-        mainnetFork = vm.createFork("base", 31574198); // Base mainnet block
+        // Fork Arbitrum mainnet at latest block
+        mainnetFork = vm.createFork("arbitrum", 353117308); // Latest Arbitrum mainnet block
         vm.selectFork(mainnetFork);
 
         // Deploy protocol normally
@@ -51,10 +51,10 @@ contract USDCForkTest is BasicDeploy {
         tokenInstance.initializeTGE(address(ecoInstance), address(treasuryInstance));
 
         // Deploy USDC market
-        _deployMarket(USDC_BASE, "Lendefi Yield Token", "LYTUSDC");
+        _deployMarket(USDC_ARB, "Lendefi Yield Token", "LYTUSDC");
 
-        // Now warp to current time to match oracle data
-        vm.warp(1749937669 + 3600); // Oracle timestamp + 1 hour
+        // Now warp to current time to match oracle data (Jul-01-2025 12:01:47 PM +UTC)
+        vm.warp(1751371307); // Exact block timestamp for block 353117308
 
         // Create test user
         testUser = makeAddr("testUser");
@@ -72,7 +72,7 @@ contract USDCForkTest is BasicDeploy {
 
         // Configure assets
         _configureWETH();
-        _configureCBBTC();
+        _configureWBTC();
         _configureUSDC();
     }
 
@@ -101,15 +101,15 @@ contract USDCForkTest is BasicDeploy {
         vm.stopPrank();
     }
 
-    function _configureCBBTC() internal {
+    function _configureWBTC() internal {
         vm.startPrank(address(timelockInstance));
 
-        // Configure CBBTC with updated struct format
+        // Configure WBTC with updated struct format
         assetsInstance.updateAssetConfig(
-            CBBTC,
+            WBTC,
             IASSETS.Asset({
                 active: 1,
-                decimals: 8, // CBBTC has 8 decimals
+                decimals: 8, // WBTC has 8 decimals
                 borrowThreshold: 700,
                 liquidationThreshold: 750,
                 maxSupplyThreshold: 500 * 1e8,
@@ -118,8 +118,8 @@ contract USDCForkTest is BasicDeploy {
                 porFeed: address(0),
                 primaryOracleType: IASSETS.OracleType.CHAINLINK,
                 tier: IASSETS.CollateralTier.CROSS_A,
-                chainlinkConfig: IASSETS.ChainlinkOracleConfig({oracleUSD: CBBTC_CHAINLINK_ORACLE, active: 1}),
-                poolConfig: IASSETS.UniswapPoolConfig({pool: CBBTC_USDC_POOL, twapPeriod: 300, active: 1})
+                chainlinkConfig: IASSETS.ChainlinkOracleConfig({oracleUSD: WBTC_CHAINLINK_ORACLE, active: 1}),
+                poolConfig: IASSETS.UniswapPoolConfig({pool: WBTC_WETH_POOL, twapPeriod: 300, active: 1})
             })
         );
 
@@ -132,7 +132,7 @@ contract USDCForkTest is BasicDeploy {
         // Configure USDC - since it's handled specially in getAssetPrice, we just need minimal config
         // Use a dummy oracle address since the price will be overridden to 1e6
         assetsInstance.updateAssetConfig(
-            USDC_BASE,
+            USDC_ARB,
             IASSETS.Asset({
                 active: 1,
                 decimals: 6,
@@ -167,7 +167,7 @@ contract USDCForkTest is BasicDeploy {
 
     function test_ChainLinkOracleBTC() public view {
         (uint80 roundId, int256 answer,, uint256 updatedAt,) =
-            AggregatorV3Interface(CBBTC_CHAINLINK_ORACLE).latestRoundData();
+            AggregatorV3Interface(WBTC_CHAINLINK_ORACLE).latestRoundData();
         console2.log("Direct BTC/USD oracle call:");
         console2.log("  RoundId:", roundId);
         console2.log("  Price:", uint256(answer) / 1e8);
@@ -194,18 +194,18 @@ contract USDCForkTest is BasicDeploy {
 
     function test_RealMedianPriceBTC() public {
         // Get prices from both oracles
-        uint256 chainlinkPrice = assetsInstance.getAssetPriceByType(CBBTC, IASSETS.OracleType.CHAINLINK);
-        uint256 uniswapPrice = assetsInstance.getAssetPriceByType(CBBTC, IASSETS.OracleType.UNISWAP_V3_TWAP);
+        uint256 chainlinkPrice = assetsInstance.getAssetPriceByType(WBTC, IASSETS.OracleType.CHAINLINK);
+        uint256 uniswapPrice = assetsInstance.getAssetPriceByType(WBTC, IASSETS.OracleType.UNISWAP_V3_TWAP);
 
-        console2.log("CBBTC Chainlink price:", chainlinkPrice);
-        console2.log("CBBTC Uniswap price:", uniswapPrice);
+        console2.log("WBTC Chainlink price:", chainlinkPrice);
+        console2.log("WBTC Uniswap price:", uniswapPrice);
 
         // Calculate expected median
         uint256 expectedMedian = (chainlinkPrice + uniswapPrice) / 2;
 
         // Get actual median
-        uint256 actualMedian = assetsInstance.getAssetPrice(CBBTC);
-        console2.log("CBBTC median price:", actualMedian);
+        uint256 actualMedian = assetsInstance.getAssetPrice(WBTC);
+        console2.log("WBTC median price:", actualMedian);
 
         assertEq(actualMedian, expectedMedian, "Median calculation should be correct");
     }
@@ -220,10 +220,10 @@ contract USDCForkTest is BasicDeploy {
         uint256 uniswapPrice = assetsInstance.getAssetPriceByType(WETH, IASSETS.OracleType.UNISWAP_V3_TWAP);
         console2.log("Uniswap-only ETH price:", uniswapPrice);
 
-        uint256 chainlinkBTCPrice = assetsInstance.getAssetPriceByType(CBBTC, IASSETS.OracleType.CHAINLINK);
+        uint256 chainlinkBTCPrice = assetsInstance.getAssetPriceByType(WBTC, IASSETS.OracleType.CHAINLINK);
         console2.log("Chainlink-only BTC price:", chainlinkBTCPrice);
 
-        uint256 uniswapBTCPrice = assetsInstance.getAssetPriceByType(CBBTC, IASSETS.OracleType.UNISWAP_V3_TWAP);
+        uint256 uniswapBTCPrice = assetsInstance.getAssetPriceByType(WBTC, IASSETS.OracleType.UNISWAP_V3_TWAP);
         console2.log("Uniswap-only BTC price:", uniswapBTCPrice);
     }
 
@@ -319,23 +319,23 @@ contract USDCForkTest is BasicDeploy {
         assertTrue(ethPriceInUSD < 5000 * 1e6, "ETH price should be less than $5000");
     }
 
-    function test_getAnyPoolTokenPriceInUSD_CBBTCETH() public {
-        uint256 cbbtcPriceInUSD = assetsInstance.getAssetPrice(CBBTC);
-        // Log the CBBTC price in USD
-        console2.log("CBBTC price in USD (from CBBTC/ETH pool):", cbbtcPriceInUSD);
+    function test_getAnyPoolTokenPriceInUSD_WBTCETH() public {
+        uint256 wbtcPriceInUSD = assetsInstance.getAssetPrice(WBTC);
+        // Log the WBTC price in USD
+        console2.log("WBTC price in USD (from WBTC/ETH pool):", wbtcPriceInUSD);
 
         // Assert that the price is within a reasonable range (e.g., $90,000 to $120,000)
-        assertTrue(cbbtcPriceInUSD > 90000 * 1e6, "CBBTC price should be greater than $90,000");
-        assertTrue(cbbtcPriceInUSD < 120000 * 1e6, "CBBTC price should be less than $120,000");
+        assertTrue(wbtcPriceInUSD > 90000 * 1e6, "WBTC price should be greater than $90,000");
+        assertTrue(wbtcPriceInUSD < 120000 * 1e6, "WBTC price should be less than $120,000");
     }
 
-    function test_getAnyPoolTokenPriceInUSD_CBBTCUSDC() public {
-        uint256 cbbtcPriceInUSD = assetsInstance.getAssetPrice(CBBTC);
-        // Log the CBBTC price in USD
-        console2.log("CBBTC price in USD (from CBBTC/USDC pool):", cbbtcPriceInUSD);
+    function test_getAnyPoolTokenPriceInUSD_WBTCUSDC() public {
+        uint256 wbtcPriceInUSD = assetsInstance.getAssetPrice(WBTC);
+        // Log the WBTC price in USD
+        console2.log("WBTC price in USD (from WBTC/USDC pool):", wbtcPriceInUSD);
 
         // Assert that the price is within a reasonable range (e.g., $90,000 to $120,000)
-        assertTrue(cbbtcPriceInUSD > 90000 * 1e6, "CBBTC price should be greater than $90,000");
-        assertTrue(cbbtcPriceInUSD < 120000 * 1e6, "CBBTC price should be less than $120,000");
+        assertTrue(wbtcPriceInUSD > 90000 * 1e6, "WBTC price should be greater than $90,000");
+        assertTrue(wbtcPriceInUSD < 120000 * 1e6, "WBTC price should be less than $120,000");
     }
 }
