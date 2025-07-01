@@ -929,7 +929,7 @@ contract LendefiAssets is
      * @return The price with normalized decimals (1e6)
      */
     function _getChainlinkPrice(address asset) internal view returns (uint256) {
-        if (block.chainid == LendefiConstants.BASE_CHAIN_ID) {
+        if (block.chainid == LendefiConstants.ARB_CHAIN_ID) {
             (, int256 answer, uint256 startedAt,,) =
                 AggregatorV3Interface(LendefiConstants.SEQUENCER_FEED).latestRoundData();
             if (answer != 0) revert SequencerDown();
