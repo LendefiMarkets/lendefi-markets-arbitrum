@@ -12,8 +12,7 @@ library LendefiConstants {
     // uint256 internal constant WAD = 1e6;
 
     /// @notice Address of the Uniswap V3 USDC/ETH pool on Base mainnet
-    address internal constant USDC_ETH_POOL = 0xb2cc224c1c9feE385f8ad6a55b4d94E92359DC59;
-    // 0xd0b53D9277642d899DF5C87A3966A349A798F224;
+    address internal constant USDC_ETH_POOL = 0xC6962004f452bE9203591991D15f6b388e09E8D0;
 
     /// @notice Role identifier for users authorized to pause/unpause the protocol
     bytes32 internal constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -43,17 +42,17 @@ library LendefiConstants {
     uint32 internal constant MAX_ASSETS = 3000;
 
     /// @notice Base chain ID
-    uint256 internal constant BASE_CHAIN_ID = 8453;
+    uint256 internal constant ARB_CHAIN_ID = 8453;
 
     /// @notice Base sequencer uptime feed address
-    address internal constant SEQUENCER_FEED = 0xBCF85224fc0756B9Fa45aA7892530B47e10b6433;
+    address internal constant SEQUENCER_FEED = 0xFdB631F5EE196F0ed6FAa767959853A9F217697D;
 
     /// @notice Grace period after sequencer restart (1 hour)
     uint256 internal constant GRACE_PERIOD = 3600;
 
     /// @notice Base mainnet USDC address
-    address internal constant BASE_USDC = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913;
+    address internal constant ARB_USDC = 0xaf88d065e77c8cC2239327C5EDb3A432268e5831;
 
     /// @notice Base mainnet WETH address
-    address internal constant BASE_WETH = 0x4200000000000000000000000000000000000006;
+    address internal constant ARB_WETH = 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1;
 }
