@@ -395,7 +395,7 @@ contract GovernanceToken is
     /// @dev only the owner can call this function, NOT the current ccipAdmin, and 1-step ownership transfer is used.
     /// @param newAdmin The address to transfer the CCIPAdmin role to. Setting to address(0) is a valid way to revoke
     /// the role
-    function setCCIPAdmin(address newAdmin) external onlyRole(MANAGER_ROLE) {
+    function setCCIPAdmin(address newAdmin) external onlyRole(MANAGER_ROLE) nonZeroAddress(newAdmin) {
         address currentAdmin = ccipAdmin;
 
         ccipAdmin = newAdmin;
