@@ -13,7 +13,7 @@ runs = 1000
 
 [rpc_endpoints]
 arbitrum = "https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
-arb-sepolia = "${ARB_SEPOLIA_RPC_URL}"
+arbitrum-sepolia = "${ARB_SEPOLIA_RPC_URL}"
 anvil = "http://localhost:8545"
 
 [profile.rpc_storage_caching]
@@ -22,4 +22,4 @@ endpoints = "all"  # or specific URLs
 
 [etherscan]
 arbitrum = { key = "${ETHERSCAN_API_KEY}", chain = "arbitrum" }
-arb-sepolia = { key = "${ETHERSCAN_API_KEY}", chain = "421614", url = "https://api-sepolia.arbiscan.io/api" }
+arbitrum-sepolia = { key = "${ARBSCAN_API_KEY}", chain = "421614", url = "https://api-sepolia.arbiscan.io/api" }
