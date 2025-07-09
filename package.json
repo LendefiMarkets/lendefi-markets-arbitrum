@@ -14,7 +14,7 @@
     "build:optimized": "FOUNDRY_PROFILE=optimized forge build",
     "coverage": "forge coverage --report lcov --ffi",
     "coverage:html": "genhtml lcov.info -o coverage-report ",
-    "deploy:mainnet": "bash -c 'source .env && forge script Deploy --broadcast --chain arbitrum --private-key $MAINNET_DEPLOYER_PK'",
+    "deploy:mainnet": "bash -c 'source .env && forge script script/DeployLendefiDAO.s.sol:DeployLendefiDAO --broadcast --chain arbitrum --rpc-url $ARB_MAINNET_RPC_URL --private-key $SEPOLIA_DEPLOYER_PK --verify --verifier etherscan --etherscan-api-key $ARBSCAN_API_KEY --ffi'",
     "deploy:sepolia": "bash -c 'source .env && forge script script/DeployLendefiDAO.s.sol:DeployLendefiDAO --broadcast --chain arbitrum-sepolia --rpc-url $ARB_SEPOLIA_RPC_URL --private-key $SEPOLIA_DEPLOYER_PK --verify --verifier etherscan --etherscan-api-key $ARBSCAN_API_KEY --ffi'",
     "lint:check": "npm run lint:sol-logic && forge fmt --check",
     "lint:fix": "sort-package-json && forge fmt && npm run lint:sol-tests --fix && npm run lint:sol-logic --fix",
