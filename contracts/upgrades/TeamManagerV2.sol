@@ -125,6 +125,7 @@ contract TeamManagerV2 is
         // Set up roles properly
         _grantRole(DEFAULT_ADMIN_ROLE, timelock_);
         _grantRole(PAUSER_ROLE, timelock_);
+        _grantRole(PAUSER_ROLE, multisig);
         _grantRole(MANAGER_ROLE, timelock_);
         _grantRole(UPGRADER_ROLE, timelock_);
         _grantRole(UPGRADER_ROLE, multisig);

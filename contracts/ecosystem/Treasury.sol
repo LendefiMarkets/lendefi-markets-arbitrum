@@ -161,6 +161,7 @@ contract Treasury is
         _grantRole(DEFAULT_ADMIN_ROLE, timelock);
         _grantRole(MANAGER_ROLE, timelock);
         _grantRole(PAUSER_ROLE, timelock);
+        _grantRole(PAUSER_ROLE, multisig);
         _grantRole(UPGRADER_ROLE, timelock);
         _grantRole(UPGRADER_ROLE, multisig);
 

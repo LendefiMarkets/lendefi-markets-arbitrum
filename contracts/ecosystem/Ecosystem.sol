@@ -153,6 +153,7 @@ contract Ecosystem is
         _grantRole(DEFAULT_ADMIN_ROLE, timelockAddr);
         _grantRole(MANAGER_ROLE, timelockAddr);
         _grantRole(PAUSER_ROLE, timelockAddr);
+        _grantRole(PAUSER_ROLE, multisig);
         _grantRole(UPGRADER_ROLE, timelockAddr);
         _grantRole(UPGRADER_ROLE, multisig); // Grant upgrade role to multisig
 
