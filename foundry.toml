@@ -21,5 +21,5 @@ chains = "all"  # or specific chain IDs
 endpoints = "all"  # or specific URLs
 
 [etherscan]
-arbitrum = { key = "${ETHERSCAN_API_KEY}", chain = "arbitrum" }
+arbitrum = { key = "${ARBSCAN_API_KEY}", chain = "arbitrum" }
 arbitrum-sepolia = { key = "${ARBSCAN_API_KEY}", chain = "421614", url = "https://api-sepolia.arbiscan.io/api" }
